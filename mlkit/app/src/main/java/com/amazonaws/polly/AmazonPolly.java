@@ -58,14 +58,14 @@ public class AmazonPolly {
         return describeVoicesResult.getVoices();
     }
 
-    public void prepareTextForPolly() {
+    public void prepareTextForPolly(String text) {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         List<Voice> voices = getAvailableVoices();
         // Create speech synthesis request.
         SynthesizeSpeechPresignRequest synthesizeSpeechPresignRequest = new
-                SynthesizeSpeechPresignRequest().withText("You are good to park here!")
+                SynthesizeSpeechPresignRequest().withText(text)
                 .withVoiceId(pickDeviceLocale(voices).getId()).withOutputFormat(OutputFormat.Mp3);
 
         // Get the presigned URL for synthesized speech audio stream.
