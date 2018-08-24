@@ -1,4 +1,4 @@
-package com.google.firebase.samples.apps.mlkit.textrecognition;
+package com.google.firebase.samples.apps.mlkit.carparkingdetection;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author liangding
  */
 
-public class ImageGraphic extends GraphicOverlay.Graphic {
+class ImageGraphic extends GraphicOverlay.Graphic {
 
     private final List<Bitmap> bitmaps;
     private final Paint paint;
@@ -27,7 +27,7 @@ public class ImageGraphic extends GraphicOverlay.Graphic {
     private int screenWidth;
     private int screenHeight;
 
-    public ImageGraphic(GraphicOverlay overlay, int... imageRes) {
+    ImageGraphic(GraphicOverlay overlay, int... imageRes) {
         super(overlay);
         bitmaps = new ArrayList<>();
         paint = new Paint();

@@ -23,7 +23,6 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.samples.apps.mlkit.FrameMetadata;
 import com.google.firebase.samples.apps.mlkit.GraphicOverlay;
-import com.google.firebase.samples.apps.mlkit.R;
 import com.google.firebase.samples.apps.mlkit.VisionProcessorBase;
 
 import java.io.IOException;
@@ -68,11 +67,10 @@ public class TextRecognitionProcessor extends VisionProcessorBase<FirebaseVision
         for (int k = 0; k < elements.size(); k++) {
           GraphicOverlay.Graphic textGraphic = new TextGraphic(graphicOverlay, elements.get(k));
           graphicOverlay.add(textGraphic);
+          
         }
       }
     }
-    ImageGraphic imageGraphic = new ImageGraphic(graphicOverlay, R.drawable.test, R.drawable.test);
-    graphicOverlay.add(imageGraphic);
   }
 
   @Override
