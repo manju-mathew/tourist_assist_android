@@ -21,19 +21,23 @@ import java.util.List;
 public class CarParkingSignProcessor extends TextRecognitionProcessor {
 
     public interface ProcessorListener {
+
         void onStart();
 
         void onStop();
+
     }
 
     private final AmazonPolly polly;
 
     private List<Integer> images;
-    private String message;
 
+    private String message;
     private Runnable mRunnable;
 
     private final ProcessorListener listener;
+
+    private Handler handler = new Handler();
 
     public CarParkingSignProcessor(Context context, ProcessorListener listener) {
         this.listener = listener;
@@ -53,9 +57,12 @@ public class CarParkingSignProcessor extends TextRecognitionProcessor {
 
         processResult(results.getText());
 
-        new Handler().postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (images.isEmpty()) {
+                    return;
+                }
                 int[] resArr = new int[images.size()];
                 for (int i = 0; i < images.size(); i++) {
                     resArr[i] = images.get(i);
@@ -63,7 +70,10 @@ public class CarParkingSignProcessor extends TextRecognitionProcessor {
                 ImageGraphic imageGraphic = new ImageGraphic(graphicOverlay, resArr);
                 graphicOverlay.add(imageGraphic);
 
+                images.clear();
                 listener.onStop();
+
+                handler.removeCallbacks(this);
             }
         }, 4000);
 

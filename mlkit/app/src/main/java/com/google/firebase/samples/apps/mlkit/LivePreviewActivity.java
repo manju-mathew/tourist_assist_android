@@ -91,6 +91,7 @@ public final class LivePreviewActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 graphicOverlay.clear();
+                createCameraSource(selectedModel);
                 startCameraSource();
             }
         });
