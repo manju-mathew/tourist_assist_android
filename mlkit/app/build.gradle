@@ -35,5 +35,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision:17.0.0'
     implementation 'com.google.firebase:firebase-ml-vision-image-label-model:15.0.0'
     implementation 'com.google.firebase:firebase-ml-model-interpreter:16.2.0'
+
+    // AWS Polly
+    implementation 'com.amazonaws:aws-android-sdk-polly:2.6.0'
 }
 apply plugin: 'com.google.gms.google-services'
