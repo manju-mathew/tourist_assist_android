@@ -3,11 +3,9 @@ package com.google.firebase.samples.apps.mlkit.carparkingdetection;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.amazonaws.polly.AmazonPolly;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.samples.apps.mlkit.CameraSource;
 import com.google.firebase.samples.apps.mlkit.FrameMetadata;
 import com.google.firebase.samples.apps.mlkit.GraphicOverlay;
 import com.google.firebase.samples.apps.mlkit.R;
@@ -22,7 +20,12 @@ import java.util.List;
 
 public class CarParkingSignProcessor extends TextRecognitionProcessor {
 
-    private final CameraSource mCameraSource;
+    public interface ProcessorListener {
+        void onStart();
+
+        void onStop();
+    }
+
     private final AmazonPolly polly;
 
     private List<Integer> images;
@@ -30,8 +33,10 @@ public class CarParkingSignProcessor extends TextRecognitionProcessor {
 
     private Runnable mRunnable;
 
-    public CarParkingSignProcessor(Context context, CameraSource cameraSource) {
-        mCameraSource = cameraSource;
+    private final ProcessorListener listener;
+
+    public CarParkingSignProcessor(Context context, ProcessorListener listener) {
+        this.listener = listener;
         polly = new AmazonPolly(context);
         images = new ArrayList<>();
         message = "";
@@ -44,18 +49,21 @@ public class CarParkingSignProcessor extends TextRecognitionProcessor {
             @NonNull final GraphicOverlay graphicOverlay) {
         super.onSuccess(results, frameMetadata, graphicOverlay);
 
+        listener.onStart();
+
         processResult(results.getText());
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCameraSource.release();
                 int[] resArr = new int[images.size()];
                 for (int i = 0; i < images.size(); i++) {
                     resArr[i] = images.get(i);
                 }
                 ImageGraphic imageGraphic = new ImageGraphic(graphicOverlay, resArr);
                 graphicOverlay.add(imageGraphic);
+
+                listener.onStop();
             }
         }, 4000);
 

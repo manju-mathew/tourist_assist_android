@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -34,6 +35,8 @@ import com.google.android.gms.common.annotation.KeepName;
 import com.google.firebase.ml.common.FirebaseMLException;
 import com.google.firebase.samples.apps.mlkit.barcodescanning.BarcodeScanningProcessor;
 import com.google.firebase.samples.apps.mlkit.carparkingdetection.CarParkingSignProcessor;
+import com.google.firebase.samples.apps.mlkit.carparkingdetection.CarParkingSignProcessor
+        .ProcessorListener;
 import com.google.firebase.samples.apps.mlkit.custommodel.CustomImageClassifierProcessor;
 import com.google.firebase.samples.apps.mlkit.facedetection.FaceDetectionProcessor;
 import com.google.firebase.samples.apps.mlkit.imagelabeling.ImageLabelingProcessor;
@@ -64,7 +67,8 @@ public final class LivePreviewActivity extends AppCompatActivity
     private CameraSource cameraSource = null;
     private CameraSourcePreview preview;
     private GraphicOverlay graphicOverlay;
-    private String selectedModel = FACE_DETECTION;
+    private View resumeButton;
+    private String selectedModel = CAR_DETECTION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,15 @@ public final class LivePreviewActivity extends AppCompatActivity
         if (graphicOverlay == null) {
             Log.d(TAG, "graphicOverlay is null");
         }
+
+        resumeButton = findViewById(R.id.resume);
+        resumeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                graphicOverlay.clear();
+                startCameraSource();
+            }
+        });
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         List<String> options = new ArrayList<>();
@@ -154,7 +167,18 @@ public final class LivePreviewActivity extends AppCompatActivity
             case CAR_DETECTION:
                 Log.i(TAG, "Using Car Parking Sign Processor");
                 cameraSource.setMachineLearningFrameProcessor(new CarParkingSignProcessor
-                        (getApplicationContext(), cameraSource));
+                        (getApplicationContext(), new ProcessorListener() {
+                            @Override
+                            public void onStart() {
+                                resumeButton.setVisibility(View.INVISIBLE);
+                            }
+
+                            @Override
+                            public void onStop() {
+                                preview.stop();
+                                resumeButton.setVisibility(View.VISIBLE);
+                            }
+                        }));
                 break;
             case CLASSIFICATION:
                 Log.i(TAG, "Using Custom Image Classifier Processor");
