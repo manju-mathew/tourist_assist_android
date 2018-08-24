@@ -153,7 +153,7 @@ public final class LivePreviewActivity extends AppCompatActivity
             switch (model) {
             case CAR_DETECTION:
                 Log.i(TAG, "Using Car Parking Sign Processor");
-                cameraSource.setMachineLearningFrameProcessor(new CarParkingSignProcessor());
+                cameraSource.setMachineLearningFrameProcessor(new CarParkingSignProcessor(cameraSource));
                 break;
             case CLASSIFICATION:
                 Log.i(TAG, "Using Custom Image Classifier Processor");
